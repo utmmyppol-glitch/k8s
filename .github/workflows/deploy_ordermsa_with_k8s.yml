@@ -1,9 +1,8 @@
-name: deploy order order-backend
+name: deploy order msa (3.msa 강의용, 아직 미사용)
 
+# 3.msa 단계에서 본인 값(계정번호·리전·네임스페이스)으로 바꾼 뒤 push 트리거로 되돌릴 것
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
 
 jobs:
   build-and-deploy:
