@@ -1,0 +1,9 @@
+$kind: http-request
+name: '상품 상세 GET /product/{id}'
+method: GET
+url: '{{base_url}}/product-service/product/{{productId}}'
+order: 2000
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('200 OK', () => pm.response.to.have.status(200));

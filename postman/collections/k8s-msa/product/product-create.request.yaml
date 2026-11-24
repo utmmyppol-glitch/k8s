@@ -1,0 +1,23 @@
+$kind: http-request
+name: '상품 등록 POST /product/create (form, productId 자동 저장)'
+method: POST
+url: '{{base_url}}/product-service/product/create'
+order: 1000
+body:
+  type: urlencoded
+  content:
+    - key: name
+      value: apple
+    - key: category
+      value: fruit
+    - key: price
+      value: '1000'
+    - key: stockQuantity
+      value: '100'
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('201 Created', () => pm.response.to.have.status(201));
+      if (pm.response.code === 201) {
+        pm.collectionVariables.set('productId', pm.response.text());
+      }

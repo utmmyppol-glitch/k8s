@@ -1,0 +1,24 @@
+$kind: http-request
+name: '토큰 재발급 POST /member/refresh-token (주의: 재발급 토큰은 product/ordering 호출에 못 씀)'
+method: POST
+url: '{{base_url}}/member-service/member/refresh-token'
+order: 9000
+auth:
+  type: noauth
+headers:
+  - key: Content-Type
+    value: application/json
+body:
+  type: json
+  content: |-
+    {
+      "refreshToken": "{{refreshToken}}"
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('200 OK', () => pm.response.to.have.status(200));
+      // 강의 코드상 재발급 토큰의 subject가 id가 아니라 email이라서
+      // 이 토큰으로 product/ordering을 호출하면 X-User-Id 파싱 에러(400)가 난다.
+      // 그래서 token을 덮어쓰지 않고 별도 변수에 보관한다.
+      pm.collectionVariables.set('tokenFromRefresh', pm.response.json().token);

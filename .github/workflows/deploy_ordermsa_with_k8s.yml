@@ -1,8 +1,10 @@
 name: deploy order msa (3.msa 강의용, 아직 미사용)
 
-# 3.msa 단계에서 본인 값(계정번호·리전·네임스페이스)으로 바꾼 뒤 push 트리거로 되돌릴 것
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - main
+# 3.msa 단계에서 본인 값(계정번호·리전·네임스페이스)으로 바꾼 뒤 push 트리거로 되돌릴 것
 
 jobs:
   build-and-deploy:
@@ -22,10 +24,10 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_KEY }}
           aws-secret-access-key:  ${{ secrets.AWS_SECRET }}
-          aws-region: ap-northeast-2
+          aws-region: ap-southeast-2
 
       - name: update cluster infomation
-        run: aws eks update-kubeconfig --name my-cluster --region ap-northeast-2
+        run: aws eks update-kubeconfig --name my-cluster --region ap-southeast-2
 
       - name: Login to ECR
         id: login-ecr
@@ -34,7 +36,7 @@ jobs:
 
       - name: gateway build and push docker image to ecr
         env:
-          REGISTRY: 346903264902.dkr.ecr.ap-northeast-2.amazonaws.com
+          REGISTRY: 606472253675.dkr.ecr.ap-southeast-2.amazonaws.com
           REPOSITORY: apigateway
           IMAGE_TAG: latest
         run: |
@@ -46,11 +48,11 @@ jobs:
       - name: eks kubectl apply
         run: |
           kubectl apply -f ./3.msa/apigateway/k8s/depl_svc.yml
-          kubectl rollout restart deployment apigateway-depl -n bradkim
+          kubectl rollout restart deployment apigateway-depl -n bomin
         
       - name: member build and push docker image to ecr
         env:
-          REGISTRY: 346903264902.dkr.ecr.ap-northeast-2.amazonaws.com
+          REGISTRY: 606472253675.dkr.ecr.ap-southeast-2.amazonaws.com
           REPOSITORY: member-service
           IMAGE_TAG: latest
         run: |
@@ -62,36 +64,36 @@ jobs:
       - name: eks kubectl apply
         run: |
           kubectl apply -f ./3.msa/member/k8s/depl_svc.yml
-          kubectl rollout restart deployment member-depl -n bradkim
-
-      - name: order build and push docker image to ecr
-        env:
-          REGISTRY: 346903264902.dkr.ecr.ap-northeast-2.amazonaws.com
-          REPOSITORY: ordering-service
-          IMAGE_TAG: latest
-        run: |
-          docker build \
-          -t $REGISTRY/$REPOSITORY:$IMAGE_TAG \
-          -f ./3.msa/ordering/Dockerfile ./3.msa/ordering
-          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
-  
-      - name: eks kubectl apply
-        run: |
-          kubectl apply -f ./3.msa/ordering/k8s/depl_svc.yml
-          kubectl rollout restart deployment ordering-depl -n bradkim
-          
-      - name: product build and push docker image to ecr
-        env:
-          REGISTRY: 346903264902.dkr.ecr.ap-northeast-2.amazonaws.com
-          REPOSITORY: product-service
-          IMAGE_TAG: latest
-        run: |
-          docker build \
-          -t $REGISTRY/$REPOSITORY:$IMAGE_TAG \
-          -f ./3.msa/product/Dockerfile ./3.msa/product
-          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
-  
-      - name: eks kubectl apply
-        run: |
-          kubectl apply -f ./3.msa/product/k8s/depl_svc.yml
-          kubectl rollout restart deployment product-depl -n bradkim
+          kubectl rollout restart deployment member-depl -n bomin
+#
+#      - name: order build and push docker image to ecr
+#        env:
+#          REGISTRY: 606472253675.dkr.ecr.ap-southeast-2.amazonaws.com
+#          REPOSITORY: ordering-service
+#          IMAGE_TAG: latest
+#        run: |
+#          docker build \
+#          -t $REGISTRY/$REPOSITORY:$IMAGE_TAG \
+#          -f ./3.msa/ordering/Dockerfile ./3.msa/ordering
+#          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+#
+#      - name: eks kubectl apply
+#        run: |
+#          kubectl apply -f ./3.msa/ordering/k8s/depl_svc.yml
+#          kubectl rollout restart deployment ordering-depl -n bomin
+#
+#      - name: product build and push docker image to ecr
+#        env:
+#          REGISTRY: 606472253675.dkr.ecr.ap-southeast-2.amazonaws.com
+#          REPOSITORY: product-service
+#          IMAGE_TAG: latest
+#        run: |
+#          docker build \
+#          -t $REGISTRY/$REPOSITORY:$IMAGE_TAG \
+#          -f ./3.msa/product/Dockerfile ./3.msa/product
+#          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+#
+#      - name: eks kubectl apply
+#        run: |
+#          kubectl apply -f ./3.msa/product/k8s/depl_svc.yml
+#          kubectl rollout restart deployment product-depl -n bomin

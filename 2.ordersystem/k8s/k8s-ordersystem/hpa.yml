@@ -5,7 +5,7 @@ apiVersion: autoscaling/v1
 kind: HorizontalPodAutoscaler
 metadata:
   name: ordersystem-backend-hpa
-  namespace: bradkim
+  namespace: bomin
 spec: 
   scaleTargetRef:
     apiVersion: apps/v1
@@ -13,7 +13,7 @@ spec:
     name: ordersystem-backend
   minReplicas: 2
   maxReplicas: 10
-  targetCPUUtilizationPercentage: 30
+  targetCPUUtilizationPercentage: 10
 
 # 메트릭 서버와 HPA를 통한 pod 현황 조회
 # kubectl get hpa ordersystem-backend-hpa -n bradkim -w

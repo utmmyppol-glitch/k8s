@@ -16,7 +16,7 @@ spec:
   - hosts:
     - "server.event19941031.store"
     # https설정시에 TLS 인증서가 저장된 certificate의 Secret의 이름(spec.secretName)을 지정
-    secretName: server-event19941031-com-tls
+    secretName: server-event19941031-store-tls
   rules:
   - host: server.event19941031.store
     http:

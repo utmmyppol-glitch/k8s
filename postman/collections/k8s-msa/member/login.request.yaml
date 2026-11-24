@@ -1,0 +1,25 @@
+$kind: http-request
+name: '로그인 POST /member/doLogin (token 자동 저장)'
+method: POST
+url: '{{base_url}}/member-service/member/doLogin'
+order: 2000
+auth:
+  type: noauth
+headers:
+  - key: Content-Type
+    value: application/json
+body:
+  type: json
+  content: |-
+    {
+      "email": "admin@naver.com",
+      "password": "12341234"
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('200 OK', () => pm.response.to.have.status(200));
+      const json = pm.response.json();
+      pm.collectionVariables.set('token', json.token);
+      pm.collectionVariables.set('refreshToken', json.refreshToken);
+      console.log('token 저장됨:', json.token);

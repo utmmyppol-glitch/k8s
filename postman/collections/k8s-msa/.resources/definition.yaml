@@ -1,0 +1,19 @@
+$kind: collection
+name: k8s MSA (gateway)
+description: 'API Gateway(8081)를 통해 member / product / ordering 서비스를 호출한다. 로그인 요청을 먼저 보내면 token 변수가 자동으로 채워진다.'
+variables:
+  - key: base_url
+    value: 'http://localhost:8081'
+  - key: token
+    value: ''
+  - key: refreshToken
+    value: ''
+  - key: tokenFromRefresh
+    value: ''
+  - key: productId
+    value: '1'
+auth:
+  type: bearer
+  credentials:
+    - key: token
+      value: '{{token}}'

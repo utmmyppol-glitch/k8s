@@ -1,0 +1,15 @@
+$kind: http-request
+name: '주문 생성 POST /ordering/create'
+method: POST
+url: '{{base_url}}/ordering-service/ordering/create'
+order: 1000
+headers:
+  - key: Content-Type
+    value: application/json
+body:
+  type: json
+  content: |-
+    {
+      "productId": {{productId}},
+      "productCount": 2
+    }

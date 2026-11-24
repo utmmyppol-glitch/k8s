@@ -1,0 +1,26 @@
+$kind: http-request
+name: '회원가입 POST /member/create'
+method: POST
+url: '{{base_url}}/member-service/member/create'
+order: 1000
+auth:
+  type: noauth
+headers:
+  - key: Content-Type
+    value: application/json
+body:
+  type: json
+  content: |-
+    {
+      "name": "test1",
+      "email": "{{newEmail}}",
+      "password": "12341234"
+    }
+scripts:
+  - type: beforeRequest
+    code: |-
+      // 같은 이메일로 두 번 가입하면 400이 나므로 매번 새 이메일을 만든다
+      pm.variables.set('newEmail', 'test' + Date.now() + '@test.com');
+  - type: afterResponse
+    code: |-
+      pm.test('201 Created', () => pm.response.to.have.status(201));

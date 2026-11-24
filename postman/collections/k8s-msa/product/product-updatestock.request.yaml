@@ -1,0 +1,15 @@
+$kind: http-request
+name: '재고 수정 PUT /product/updatestock'
+method: PUT
+url: '{{base_url}}/product-service/product/updatestock'
+order: 3000
+headers:
+  - key: Content-Type
+    value: application/json
+body:
+  type: json
+  content: |-
+    {
+      "productId": {{productId}},
+      "productQuantity": 5
+    }
